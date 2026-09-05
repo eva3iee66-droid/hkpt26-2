@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>直屬抽籤配對分組測驗</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --primary-color: #6c5ce7;
+            --text-color: #2d3436;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            background: var(--card-bg);
+            max-width: 600px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dfe6e9;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .radio-label {
+            flex: 1;
+            background: #f1f2f6;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 0.9em;
+        }
+
+        .radio-label:hover {
+            background: #e4e7eb;
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + span {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        .btn-submit:disabled {
+            background-color: #b2bec3;
+            cursor: not-allowed;
+        }
+
+        #result {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px dashed var(--primary-color);
+        }
+
+        .group-tag {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 15px 0 5px;
+        }
+
+        .group-desc {
+            color: #636e72;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎯 直屬分組性格測驗</h1>
+    <p class="subtitle">請填寫基本資料與音樂偏好，系統將會為你進行動態平均分組！</p>
+
+    <form id="quizForm">
+        <div class="form-group">
+            <label>1. 您的年級/身份：</label>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="role" value="大一" required>
+                    <span>🌱 大一（新生/直屬學弟妹）</span>
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="role" value="大二" required>
+                    <span>🎓 大二（學長姐）</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="studentId">2. 學號：</label>
+            <input type="text" id="studentId" required placeholder="例如：U1140109">
+        </div>
+
+        <div class="form-group">
+            <label for="name">3. 姓名：</label>
+            <input type="text" id="name" required placeholder="例如：許安喬">
+        </div>
+
+        <div class="form-group">
+            <label for="className">4. 班級：</label>
+            <input type="text" id="className" required placeholder="例如：物治一甲">
+        </div>
+
+        <div class="form-group">
+            <label>5. 你主要偏好的音樂類型是？</label>
+            <select id="genre" required>
+                <option value="">-- 請選擇 --</option>
+                <option value="INDIE">獨立樂團 / 聽團仔</option>
+                <option value="KPOP">K-POP / 韓國流行</option>
+                <option value="HIPHOP">嘻哈 / 饒舌 / Trap</option>
+                <option value="POP">華語流行 / J-POP / 歐美流行</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="singers">6. 你平常比較喜歡聽誰的歌？（請舉出三位歌手）</label>
+            <input type="text" id="singers" required placeholder="例如：草東沒有派對、告五人、美秀集團">
+        </div>
+
+        <div class="form-group">
+            <label for="songs">7. 你平常最喜歡的三首歌是？</label>
+            <input type="text" id="songs" required placeholder="例如：爛泥、披星戴月的想你、捲菸">
+        </div>
+
+        <div class="form-group">
+            <label>8. 你自己是 I 人還是 E 人？</label>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="myMBTI" value="I" required>
+                    <span>I 人（內向沉穩）</span>
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="myMBTI" value="E" required>
+                    <span>E 人（外向活潑）</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>9. 你希望你的直屬是 I 人還是 E 人？</label>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="targetMBTI" value="I" required>
+                    <span>希望是 I 人</span>
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="targetMBTI" value="E" required>
+                    <span>希望是 E 人</span>
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="targetMBTI" value="ANY" required>
+                    <span>都好，隨緣！</span>
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">送出並分析結果</button>
+    </form>
+
+    <div id="result">
+        <h2>🎉 分組結果出爐！</h2>
+        <p><span id="userRole"></span> <span id="userName"></span> 同學（<span id="userClass"></span>），最適合你的直屬組別是：</p>
+        <div class="group-tag" id="groupTitle"></div>
+        <p class="group-desc" id="groupDesc"></p>
+    </div>
+</div>
+
+<script>
+    // ⚠️ 請把這裡替換成你在 Google Apps Script 部署獲得的 Web App URL
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxSgsljcmVkakdgrVmK-Kif1FTkufczQkwS6Zpo0UVurUONtvfRKa1zbz1RmVi901vzWQ/exec";
+
+    const groupDescriptions = {
+        "INDIE_I": "低調、深沉，習慣現場音樂的波長。你喜歡獨自細細品味音樂中的靈魂，最適合與同樣懂聽又保有個人空間的直屬一起安靜聽歌。",
+        "INDIE_E": "只要音樂一響，就是祭典開場！你熱愛現場 LiveHouse 的能量，最適合帶領直屬一起開撞、衝第一排，活出最熱血的青春。",
+        "KPOP_I": "默默關注舞台細節、收藏小卡與專輯。你的熱情藏在內心深處，適合與能精準懂你「本命」神采的直屬一起線上嗑歌論舞。",
+        "KPOP_E": "應援口號背超熟，舞蹈 cover 隨時開跳！你是聚光燈的焦點，最適合跟著直屬一起看演唱會、大聲應援喊出聲。",
+        "HIPHOP_I": "比起熱鬧的場合，你更在意 Lyricist（詞作者）表達的思想。個性冷靜有型，最適合與直屬在深夜裡切磋音樂與生活品味。",
+        "HIPHOP_E": "氣場全開，節奏感爆棚！你是派對上的氣氛帶動者，適合與直屬一起嗨、分享最新的潮流與音樂節動態。",
+        "POP_I": "溫暖、隨和且好相處。流行金曲是你的精神糧食，最適合與直屬來一場不尷尬的聊天，默默給予彼此溫柔的支持。",
+        "POP_E": "熱情好客，人人都是你的朋友！經典好歌一開唱你就是麥克風主唱，最適合帶著直屬一起唱歌破冰、迅速拉近距離。"
+    };
+
+    document.getElementById('quizForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerText = "資料計算與傳送中...";
+
+        const formData = {
+            role: document.querySelector('input[name="role"]:checked').value,
+            studentId: document.getElementById('studentId').value,
+            name: document.getElementById('name').value,
+            className: document.getElementById('className').value,
+            genre: document.getElementById('genre').value,
+            singers: document.getElementById('singers').value,
+            songs: document.getElementById('songs').value,
+            myMBTI: document.querySelector('input[name="myMBTI"]:checked').value,
+            targetMBTI: document.querySelector('input[name="targetMBTI"]:checked').value
+        };
+
+        fetch(GAS_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        })
+        .then(() => {
+            const groupKey = formData.genre + "_" + formData.myMBTI;
+
+            document.getElementById('userRole').innerText = formData.role;
+            document.getElementById('userName').innerText = formData.name;
+            document.getElementById('userClass').innerText = formData.className;
+            
+            const groupTitles = {
+                "INDIE_I": "🎸 靜謐聽團社（聽團仔 × I型人）",
+                "INDIE_E": "🔥 狂熱衝台組（聽團仔 × E型人）",
+                "KPOP_I": "🎧 追星研究室（K-POP × I型人）",
+                "KPOP_E": "💃 舞台應援團（K-POP × E型人）",
+                "HIPHOP_I": "🎙️ 深夜 Flow 俱樂部（嘻哈 × I型人）",
+                "HIPHOP_E": "🎧 潮流派對組（嘻哈 × E型人）",
+                "POP_I": "☕ 療癒唱片行（流行 × I型人）",
+                "POP_E": "🎤 歡唱 KTV 霸主（流行 × E型人）"
+            };
+
+            document.getElementById('groupTitle').innerText = groupTitles[groupKey];
+            document.getElementById('groupDesc').innerText = groupDescriptions[groupKey];
+            
+            document.getElementById('quizForm').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+        })
+        .catch(error => {
+            alert("傳送失敗，請再試一次！");
+            submitBtn.disabled = false;
+            submitBtn.innerText = "送出並分析結果";
+        });
+    });
+</script>
+
+</body>
+</html>
